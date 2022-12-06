@@ -1,0 +1,25 @@
+ul{
+  padding: 0;
+  list-style: none;
+  margin: 0;
+}
+
+li{
+  margin: 10px 0 10px;
+}
+
+.list_btn{
+  margin-left: 10px;
+  padding: 6px 13px;
+  border: none;
+  
+  border: solid 1px;
+  border-radius: 25px;
+  border: solid 1px;
+  box-shadow: 5px 5px 5px grey;
+}
+
+.list_btn:hover{
+  background-color: rgb(197, 49, 49);
+  cursor: pointer;
+}
