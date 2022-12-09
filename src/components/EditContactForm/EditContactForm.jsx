@@ -1,19 +1,17 @@
 import React from 'react';
-// import { customAlphabet } from 'nanoid';
 import * as Yup from 'yup';
-import { ButtonStyled, FormStyled } from './ContactForm.styled';
-import AddIcon from '@mui/icons-material/Add';
-import { TextField } from '@mui/material';
+import { ButtonStyled, FormStyled } from './EditContactForm.styled';
+import SaveIcon from '@mui/icons-material/Save';
+import { TextField, Typography } from '@mui/material';
 //
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { ToastContainer, toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-//
-import { selectContacts } from 'redux/contacts/selectors';
-import { addContact } from 'redux/contacts/operations';
+import { editContact } from 'redux/contacts/operations';
+import Box from 'components/Box';
 
 const phoneRegExp =
   /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/;
@@ -28,7 +26,7 @@ const schema = Yup.object({
     .required('This field is required!'),
 }).required();
 
-export default function ContactForm() {
+export default function EditContactForm({ contact, setOpen }) {
   const {
     control,
     handleSubmit,
@@ -36,26 +34,23 @@ export default function ContactForm() {
     formState: { errors, isSubmitSuccessful },
   } = useForm({
     defaultValues: {
-      name: '',
-      number: '',
+      name: contact?.name,
+      number: contact?.number,
     },
     resolver: yupResolver(schema),
   });
 
   const dispatch = useDispatch();
-  const contacts = useSelector(selectContacts);
 
   const onFormSubmit = data => {
     const { name, number } = data;
-    const contact = {
+    const editedContact = {
+      id: contact.id,
       name,
       number,
     };
-    if (contacts.find(contact => contact.name === name)) {
-      toast.warning(`${name} is already in contacts`, {});
-      return;
-    }
-    dispatch(addContact(contact));
+    dispatch(editContact(editedContact));
+    setOpen(false);
   };
 
   const onFormError = error => {
@@ -70,6 +65,9 @@ export default function ContactForm() {
 
   return (
     <>
+      <Typography variant="h5" align="center" gutterBottom>
+        Edit contact
+      </Typography>
       <FormStyled onSubmit={handleSubmit(onFormSubmit, onFormError)}>
         <Controller
           name="name"
@@ -100,10 +98,18 @@ export default function ContactForm() {
             />
           )}
         />
-
-        <ButtonStyled type="submit" variant="outlined" startIcon={<AddIcon />}>
-          Add contact
-        </ButtonStyled>
+        <Box flexDirection="row" gridGap="10px" justifyContent="end">
+          <ButtonStyled variant="contained" onClick={() => setOpen(false)}>
+            Cancel
+          </ButtonStyled>
+          <ButtonStyled
+            type="submit"
+            variant="outlined"
+            startIcon={<SaveIcon />}
+          >
+            Save
+          </ButtonStyled>
+        </Box>
       </FormStyled>
 
       <ToastContainer

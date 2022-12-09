@@ -1,27 +1,30 @@
-import css from './Filter.module.css'
+import React from 'react';
+import { TextFieldStyled } from './Filter.styled';
+//
+import { useDispatch } from 'react-redux';
+import { setFilter } from '../../redux/filter/filterSlice';
+import debounce from 'lodash.debounce';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { setFilter } from '../../redux/contactsSlice';
-
-export const Filter = () => {
-
-  const filter = useSelector(state => state.contactsSlice.contacts.filter.value);
+function Filter() {
   const dispatch = useDispatch();
 
-  const onChange = e => {
-    dispatch(setFilter(e.target.value));
+  const onFilterChange = event => {
+    const value = event.target.value;
+    dispatch(setFilter(value));
   };
 
-  return(
-    <label className = {css.form_label}>
-    Find contacts by name
-    <input onChange={onChange} 
-      type="text" 
-      name="filter" 
-      value={filter} 
+  const onFilterChangeDebounced = debounce(onFilterChange, 500);
+
+  return (
+    <TextFieldStyled
+      id="search"
+      name="search"
+      label="Find contacts by name"
+      variant="standard"
+      sx={{ marginBottom: '25px', width: '300px' }}
+      onChange={onFilterChangeDebounced}
     />
-  </label>
-  )
-};
+  );
+}
 
-
+export default Filter;
