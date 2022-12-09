@@ -44,7 +44,9 @@ export const logIn = createAsyncThunk(
       setAuthHeader(res.data.token);
       return res.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return (
+      thunkAPI.rejectWithValue(error.message),
+      alert("There is no such user in the system"))
     }
   }
 );
